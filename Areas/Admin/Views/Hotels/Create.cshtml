@@ -1,0 +1,77 @@
+@model HotelBookingSystem.Models.Hotel
+@{
+    ViewData["Title"] = "Thêm Cơ Sở Khách Sạn / Homestay Mới";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h4 class="fw-bold text-dark mb-3">
+                <i class="bi bi-plus-circle text-emerald me-2"></i>Thêm Cơ Sở Mới
+            </h4>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label asp-for="Name" class="form-label small fw-bold">Tên khách sạn / Homestay *</label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Đà Lạt Pine Homestay" required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="City" class="form-label small fw-bold">Thành phố / Khu vực *</label>
+                        <input asp-for="City" class="form-control" placeholder="Đà Lạt, Sa Pa, Phú Quốc..." required />
+                        <span asp-validation-for="City" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Address" class="form-label small fw-bold">Địa chỉ chi tiết *</label>
+                        <input asp-for="Address" class="form-control" placeholder="Số nhà, tên đường, phường/xã..." required />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="StarRating" class="form-label small fw-bold">Xếp hạng sao (1 - 5)</label>
+                        <select asp-for="StarRating" class="form-select">
+                            <option value="1">1 Sao</option>
+                            <option value="2">2 Sao</option>
+                            <option value="3">3 Sao</option>
+                            <option value="4" selected>4 Sao</option>
+                            <option value="5">5 Sao (Resort cao cấp)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Phone" class="form-label small fw-bold">Hotline liên hệ</label>
+                        <input asp-for="Phone" class="form-control" placeholder="0263..." />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Email" class="form-label small fw-bold">Email lễ tân</label>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="booking@@hotel.com" />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="ImageUrl" class="form-label small fw-bold">Link hình ảnh đại diện (URL)</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="https://images.unsplash.com/..." />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label small fw-bold">Mô tả đặc điểm cơ sở</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Giới thiệu về vị trí địa lý, không gian cảnh quan..."></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-emerald rounded-pill px-4 fw-bold">
+                        <i class="bi bi-save me-1"></i>Lưu Cơ Sở
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

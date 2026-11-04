@@ -1,0 +1,273 @@
+@model HotelBookingSystem.Controllers.HomeViewModel
+@{
+    ViewData["Title"] = "Trang Chủ - Đặt Phòng Khách Sạn & Homestay Nghỉ Dưỡng";
+}
+
+<!-- Hero Banner -->
+<section class="hero-banner text-center">
+    <div class="container">
+        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-3">
+            <i class="bi bi-fire me-1"></i> Ưu Đãi Đặt Phòng Mùa Du Lịch 2026
+        </span>
+        <h1 class="display-4 fw-extrabold text-white mb-3">
+            Khám Phá Khách Sạn &amp; Homestay Đẹp Nhất
+        </h1>
+        <p class="lead text-light opacity-90 mx-auto" style="max-width: 650px;">
+            Trải nghiệm kỳ nghỉ hoàn hảo với phòng nghỉ sang trọng, kiểm tra phòng trống thời gian thực và thanh toán VietQR / VNPay tức thì.
+        </p>
+    </div>
+</section>
+
+<!-- Floating Search Box -->
+<div class="container">
+    <div class="search-box-floating">
+        <form asp-controller="Rooms" asp-action="Index" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold text-muted small mb-1">
+                        <i class="bi bi-geo-alt-fill text-danger me-1"></i>ĐIỂM ĐẾN / KHU VỰC
+                    </label>
+                    <select name="City" class="form-select form-select-lg border-2">
+                        <option value="">Tất cả điểm đến</option>
+                        @foreach (var city in Model.AvailableCities)
+                        {
+                            <option value="@city">@city</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold text-muted small mb-1">
+                        <i class="bi bi-calendar-check text-emerald me-1"></i>NGÀY NHẬN PHÒNG
+                    </label>
+                    <input type="date" name="CheckInDate" class="form-control form-select-lg border-2" 
+                           value="@Model.CheckInDate.ToString("yyyy-MM-dd")" min="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label class="form-label fw-bold text-muted small mb-1">
+                        <i class="bi bi-calendar-x text-warning me-1"></i>NGÀY TRẢ PHÒNG
+                    </label>
+                    <input type="date" name="CheckOutDate" class="form-control form-select-lg border-2" 
+                           value="@Model.CheckOutDate.ToString("yyyy-MM-dd")" min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" required />
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label class="form-label fw-bold text-muted small mb-1">
+                        <i class="bi bi-people-fill text-primary me-1"></i>SỐ KHÁCH
+                    </label>
+                    <select name="Guests" class="form-select form-select-lg border-2">
+                        <option value="1">1 Khách</option>
+                        <option value="2" selected>2 Khách</option>
+                        <option value="3">3 Khách</option>
+                        <option value="4">4 Khách</option>
+                        <option value="6">5+ Khách (Gia đình)</option>
+                    </select>
+                </div>
+                <div class="col-lg-1 col-md-12">
+                    <button type="submit" class="btn btn-emerald btn-lg w-100 fw-bold shadow-sm d-flex align-items-center justify-content-center" title="Tìm phòng trống">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Popular Destinations -->
+<section class="container py-5 mt-4">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+        <div>
+            <h6 class="text-uppercase text-emerald fw-bold mb-1 letter-spacing-1">Điểm đến yêu thích</h6>
+            <h2 class="fw-bold mb-0">Địa Điểm Du Lịch Hàng Đầu</h2>
+        </div>
+        <a asp-controller="Rooms" asp-action="Index" class="text-decoration-none fw-semibold text-emerald">
+            Xem tất cả phòng <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+            <a href="/Rooms?City=Đà+Lạt" class="text-decoration-none">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm card-hover text-white position-relative" style="height: 280px;">
+                    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" class="w-100 h-100 object-fit-cover" alt="Đà Lạt" />
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                    <div class="position-absolute bottom-0 start-0 p-3 w-100" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+                        <h4 class="fw-bold mb-1 text-white">Đà Lạt</h4>
+                        <p class="small text-light mb-0"><i class="bi bi-tree me-1"></i>Homestay đồi thông, săn mây</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="/Rooms?City=Phú+Quốc" class="text-decoration-none">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm card-hover text-white position-relative" style="height: 280px;">
+                    <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=600&q=80" class="w-100 h-100 object-fit-cover" alt="Phú Quốc" />
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                    <div class="position-absolute bottom-0 start-0 p-3 w-100" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+                        <h4 class="fw-bold mb-1 text-white">Phú Quốc</h4>
+                        <p class="small text-light mb-0"><i class="bi bi-water me-1"></i>Resort &amp; Villa hồ bơi riêng</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="/Rooms?City=Đà+Nẵng" class="text-decoration-none">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm card-hover text-white position-relative" style="height: 280px;">
+                    <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=600&q=80" class="w-100 h-100 object-fit-cover" alt="Đà Nẵng" />
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                    <div class="position-absolute bottom-0 start-0 p-3 w-100" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+                        <h4 class="fw-bold mb-1 text-white">Đà Nẵng</h4>
+                        <p class="small text-light mb-0"><i class="bi bi-sun me-1"></i>Biển Mỹ Khê &amp; Cầu Rồng</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <a href="/Rooms?City=Sa+Pa" class="text-decoration-none">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm card-hover text-white position-relative" style="height: 280px;">
+                    <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=600&q=80" class="w-100 h-100 object-fit-cover" alt="Sa Pa" />
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-25"></div>
+                    <div class="position-absolute bottom-0 start-0 p-3 w-100" style="background: linear-gradient(transparent, rgba(0,0,0,0.85));">
+                        <h4 class="fw-bold mb-1 text-white">Sa Pa</h4>
+                        <p class="small text-light mb-0"><i class="bi bi-cloud-haze2 me-1"></i>Thung lũng Mường Hoa kỳ vĩ</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Rooms Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-emerald-light text-emerald px-3 py-2 rounded-pill fw-bold text-uppercase mb-2">
+                Không gian đẳng cấp
+            </span>
+            <h2 class="fw-bold">Phòng &amp; Homestay Nổi Bật Dành Cho Bạn</h2>
+            <p class="text-muted">Các phòng được khách hàng yêu thích và đánh giá cao nhất hiện nay</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var room in Model.FeaturedRoomTypes)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 rounded-4 overflow-hidden shadow-sm card-hover">
+                        <div class="position-relative" style="height: 230px;">
+                            <img src="@room.ImageUrl" class="w-100 h-100 object-fit-cover" alt="@room.Name" />
+                            <span class="position-absolute top-0 start-0 m-3 badge bg-dark bg-opacity-75 rounded-pill px-3 py-2 small">
+                                <i class="bi bi-geo-alt-fill text-warning me-1"></i>@room.Hotel?.City
+                            </span>
+                            <span class="position-absolute top-0 end-0 m-3 badge bg-emerald text-white rounded-pill px-3 py-2 small fw-bold">
+                                @room.Hotel?.StarRating <i class="bi bi-star-fill text-warning ms-1"></i>
+                            </span>
+                        </div>
+                        <div class="card-body d-flex flex-column p-4">
+                            <div class="small text-muted fw-semibold mb-1">
+                                <i class="bi bi-building me-1"></i>@room.Hotel?.Name
+                            </div>
+                            <h5 class="card-title fw-bold text-dark mb-2">@room.Name</h5>
+                            <p class="card-text text-muted small flex-grow-1 line-clamp-2">
+                                @room.Description
+                            </p>
+
+                            <div class="d-flex flex-wrap gap-2 my-3 text-secondary small">
+                                <span class="badge bg-light text-dark border"><i class="bi bi-people me-1"></i>@room.Capacity khách</span>
+                                <span class="badge bg-light text-dark border"><i class="bi bi-aspect-ratio me-1"></i>@room.SizeM2 m²</span>
+                                <span class="badge bg-light text-dark border"><i class="bi bi-moon-stars me-1"></i>@room.BedType</span>
+                            </div>
+
+                            <hr class="my-2 border-light">
+
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div>
+                                    <span class="text-muted small">Chỉ từ</span>
+                                    <div class="fw-bold fs-5 text-emerald">
+                                        @room.BasePrice.ToString("N0") <span class="small fw-normal text-muted">đ / đêm</span>
+                                    </div>
+                                </div>
+                                <a asp-controller="Rooms" asp-action="Details" asp-route-id="@room.Id" 
+                                   asp-route-checkIn="@Model.CheckInDate.ToString("yyyy-MM-dd")" 
+                                   asp-route-checkOut="@Model.CheckOutDate.ToString("yyyy-MM-dd")" 
+                                   class="btn btn-emerald rounded-pill px-3 py-2 fw-semibold">
+                                    Chi tiết &amp; Đặt <i class="bi bi-chevron-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="Rooms" asp-action="Index" class="btn btn-outline-emerald btn-lg rounded-pill px-5 fw-bold">
+                <i class="bi bi-grid me-2"></i>Khám phá toàn bộ phòng trống
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Extra Services Highlight Section -->
+<section class="container py-5">
+    <div class="row align-items-center g-5">
+        <div class="col-lg-6">
+            <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold text-uppercase mb-2">
+                Trọn Gói Tiện Nghi
+            </span>
+            <h2 class="fw-bold mb-3">Dịch Vụ Đi Kèm Chu Đáo &amp; Linh Hoạt</h2>
+            <p class="text-muted mb-4">
+                Khi đặt phòng tại StayVivu, quý khách có thể thoải mái chọn thêm các gói dịch vụ tiện ích với giá ưu đãi đặc biệt:
+            </p>
+            <div class="row g-3">
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-3">
+                        <div class="fs-3 text-emerald"><i class="bi bi-cup-hot-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Buffet Sáng Cao Cấp</h6>
+                            <p class="small text-muted mb-0">Ẩm thực Á-Âu hơn 40 món chế biến tại chỗ.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-3">
+                        <div class="fs-3 text-primary"><i class="bi bi-car-front-fill"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Đưa Đón Sân Bay</h6>
+                            <p class="small text-muted mb-0">Xe riêng 7 chỗ đời mới, tài xế đúng giờ.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-3">
+                        <div class="fs-3 text-warning"><i class="bi bi-bicycle"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Thuê Xe Máy Dạo Phố</h6>
+                            <p class="small text-muted mb-0">Xe tay ga mới, mũ bảo hiểm &amp; áo mưa tiện lợi.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-3">
+                        <div class="fs-3 text-danger"><i class="bi bi-fire"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-1">Set Tiệc BBQ Sân Vườn</h6>
+                            <p class="small text-muted mb-0">Than hoa không khói, bếp nướng &amp; chén bát.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="position-relative">
+                <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80" class="rounded-4 shadow-lg w-100 object-fit-cover" style="height: 420px;" alt="Dịch vụ cao cấp" />
+                <div class="position-absolute bottom-0 start-0 m-4 p-3 bg-white bg-opacity-95 rounded-3 shadow-sm border" style="max-width: 280px;">
+                    <div class="d-flex align-items-center gap-3">
+                        <i class="bi bi-shield-check fs-2 text-emerald"></i>
+                        <div>
+                            <div class="fw-bold text-dark">Thanh Toán An Toàn</div>
+                            <div class="small text-muted">VietQR &amp; VNPay Sandbox tức thì</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

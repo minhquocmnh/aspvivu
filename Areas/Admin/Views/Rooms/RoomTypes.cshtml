@@ -1,0 +1,60 @@
+@model List<HotelBookingSystem.Models.RoomType>
+@{
+    ViewData["Title"] = "Quản Lý Loại Phòng & Biểu Giá";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-card-heading text-emerald me-2"></i>Loại Phòng &amp; Biểu Giá
+        </h1>
+        <p class="text-muted small mb-0">Cấu hình giá phòng theo đêm, sức chứa tối đa, diện tích và tiện nghi</p>
+    </div>
+    <div class="btn-toolbar gap-2">
+        <a asp-action="CreateRoomType" class="btn btn-emerald btn-sm rounded-pill px-3 shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i>Thêm Loại Phòng Mới
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    @foreach (var rt in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <div class="position-relative" style="height: 190px;">
+                    <img src="@rt.ImageUrl" class="w-100 h-100 object-fit-cover" alt="@rt.Name" />
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-emerald text-white rounded-pill px-3 py-2 fw-bold">
+                        @rt.BasePrice.ToString("N0") đ / đêm
+                    </span>
+                    <span class="position-absolute bottom-0 start-0 m-3 badge bg-dark bg-opacity-75 rounded-pill px-3 py-1 small">
+                        <i class="bi bi-building me-1"></i>@rt.Hotel?.Name
+                    </span>
+                </div>
+
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-2">@rt.Name</h5>
+                        <p class="small text-muted mb-3 line-clamp-2">@rt.Description</p>
+
+                        <div class="d-flex flex-wrap gap-2 mb-3 small">
+                            <span class="badge bg-light text-dark border"><i class="bi bi-people me-1"></i>@rt.Capacity khách</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-aspect-ratio me-1"></i>@rt.SizeM2 m²</span>
+                            <span class="badge bg-light text-dark border"><i class="bi bi-door-closed me-1"></i>@rt.Rooms.Count phòng thực tế</span>
+                        </div>
+
+                        <div class="small text-muted border-top pt-2">
+                            <strong>Tiện nghi:</strong> @rt.Amenities
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-2 border-top d-flex justify-content-end">
+                        <a asp-action="EditRoomType" asp-route-id="@rt.Id" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            <i class="bi bi-pencil-square me-1"></i>Chỉnh sửa loại phòng
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

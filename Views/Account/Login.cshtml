@@ -1,0 +1,92 @@
+@model HotelBookingSystem.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Đăng Nhập - StayVivu";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="avatar-circle bg-emerald text-white fs-4 mx-auto mb-2" style="width: 52px; height: 52px;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark">Đăng Nhập Tài Khoản</h3>
+                    <p class="text-muted small">Truy cập để quản lý đơn đặt phòng và tiện ích</p>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 small"></div>
+
+                <form asp-action="Login" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="ReturnUrl" />
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label small fw-bold">Tên đăng nhập hoặc Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                            <input asp-for="Username" class="form-control border-start-0" id="loginUsername" placeholder="admin@hotel.com hoặc tên đăng nhập" required />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label small fw-bold">Mật khẩu</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                            <input asp-for="Password" type="password" class="form-control border-start-0" id="loginPassword" placeholder="••••••••" required />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="form-check small">
+                            <input class="form-check-input" type="checkbox" asp-for="RememberMe" id="rememberMe">
+                            <label class="form-check-label text-muted" for="rememberMe">
+                                Ghi nhớ đăng nhập
+                            </label>
+                        </div>
+                        <a href="#" onclick="alert('Vui lòng liên hệ quản trị viên để cấp lại mật khẩu.')" class="small text-emerald text-decoration-none">Quên mật khẩu?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald w-100 py-2 rounded-pill fw-bold shadow-sm mb-3">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Đăng Nhập
+                    </button>
+                </form>
+
+                <!-- Demo Fast-Login Buttons for Testing -->
+                <div class="border-top pt-3 mt-2">
+                    <div class="small fw-bold text-muted text-center mb-2">
+                        <i class="bi bi-key-fill text-warning me-1"></i>Đăng nhập nhanh (Dành cho thử nghiệm):
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-success btn-sm rounded-pill" onclick="fillAdmin()">
+                            <i class="bi bi-shield-lock-fill me-1"></i>Chủ Khách Sạn (Admin): <code>admin@hotel.com</code>
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill" onclick="fillCustomer()">
+                            <i class="bi bi-person-check-fill me-1"></i>Khách Hàng (User): <code>khachhang@gmail.com</code>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 small text-muted">
+                    Chưa có tài khoản? <a asp-action="Register" class="text-emerald fw-bold text-decoration-none">Đăng ký ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        function fillAdmin() {
+            $('#loginUsername').val('admin@hotel.com');
+            $('#loginPassword').val('Admin@123456');
+        }
+        function fillCustomer() {
+            $('#loginUsername').val('khachhang@gmail.com');
+            $('#loginPassword').val('User@123456');
+        }
+    </script>
+}

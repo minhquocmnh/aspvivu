@@ -1,0 +1,176 @@
+@model HotelBookingSystem.Models.ViewModels.BookingLookupViewModel
+@{
+    ViewData["Title"] = "Tra Cứu Đơn Đặt Phòng - StayVivu";
+}
+
+<div class="bg-emerald text-white py-4 mb-4">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-1"><i class="bi bi-ticket-perforated me-2"></i>Tra Cứu Thông Tin Đặt Phòng</h2>
+        <p class="text-light opacity-90 mb-0 small">
+            Nhập mã đặt phòng và số điện thoại để kiểm tra trạng thái đơn đặt, dịch vụ và biên nhận thanh toán
+        </p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Search card -->
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+                <form asp-action="Lookup" method="get">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-muted">Mã Đặt Phòng (Booking Code) *</label>
+                            <input type="text" name="bookingCode" class="form-control text-uppercase" 
+                                   placeholder="Ví dụ: BK20261101901" value="@Model.BookingCode" required />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold small text-muted">Số điện thoại (Tùy chọn)</label>
+                            <input type="tel" name="phone" class="form-control" 
+                                   placeholder="0905123456" value="@Model.CustomerPhone" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-emerald w-100 fw-bold">
+                                <i class="bi bi-search me-1"></i>Tra cứu
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-3 small text-muted">
+                    <i class="bi bi-lightbulb text-warning me-1"></i>
+                    Gợi ý mã mẫu đã có sẵn: <code>BK20261101901</code>, <code>BK20261103854</code>, <code>BK20261104112</code>
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            @if (Model.HasSearched)
+            {
+                if (Model.BookingResult != null)
+                {
+                    var b = Model.BookingResult;
+                    <div class="card border-0 shadow rounded-4 overflow-hidden">
+                        <div class="card-header bg-white p-4 border-bottom d-flex flex-wrap justify-content-between align-items-center">
+                            <div>
+                                <span class="badge bg-secondary mb-1">Mã: @b.BookingCode</span>
+                                <h4 class="fw-bold mb-0 text-dark">@b.Room?.Hotel?.Name</h4>
+                                <div class="small text-muted"><i class="bi bi-geo-alt-fill text-danger me-1"></i>@b.Room?.Hotel?.Address, @b.Room?.Hotel?.City</div>
+                            </div>
+                            <div class="text-end mt-2 mt-md-0">
+                                @switch (b.Status)
+                                {
+                                    case BookingStatus.Pending:
+                                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fs-6"><i class="bi bi-clock me-1"></i>Chờ xác nhận</span>
+                                        break;
+                                    case BookingStatus.Confirmed:
+                                        <span class="badge bg-success px-3 py-2 rounded-pill fs-6"><i class="bi bi-check2-circle me-1"></i>Đã xác nhận</span>
+                                        break;
+                                    case BookingStatus.CheckedIn:
+                                        <span class="badge bg-primary px-3 py-2 rounded-pill fs-6"><i class="bi bi-door-open me-1"></i>Đang lưu trú</span>
+                                        break;
+                                    case BookingStatus.CheckedOut:
+                                        <span class="badge bg-secondary px-3 py-2 rounded-pill fs-6"><i class="bi bi-check-all me-1"></i>Đã hoàn tất</span>
+                                        break;
+                                    case BookingStatus.Cancelled:
+                                        <span class="badge bg-danger px-3 py-2 rounded-pill fs-6"><i class="bi bi-x-circle me-1"></i>Đã hủy</span>
+                                        break;
+                                }
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <div class="row g-4 mb-3">
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded-3 small">
+                                        <div class="fw-bold text-muted mb-2">CHI TIẾT PHÒNG</div>
+                                        <div class="fw-bold text-dark fs-6 mb-1">@b.Room?.RoomType?.Name (Phòng @b.Room?.RoomNumber)</div>
+                                        <div>Khách: @b.GuestsCount người | Thời gian: @b.TotalNights đêm</div>
+                                        <div class="mt-2 text-muted">
+                                            <strong>Check-in:</strong> @b.CheckInDate.ToString("dd/MM/yyyy") | <strong>Check-out:</strong> @b.CheckOutDate.ToString("dd/MM/yyyy")
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-3 bg-light rounded-3 small">
+                                        <div class="fw-bold text-muted mb-2">KHÁCH HÀNG &amp; THANH TOÁN</div>
+                                        <div class="fw-bold text-dark fs-6 mb-1">@b.CustomerName</div>
+                                        <div>SĐT: @b.CustomerPhone | @b.CustomerEmail</div>
+                                        <div class="mt-2">
+                                            Thanh toán: 
+                                            @if (b.PaymentStatus == PaymentStatus.Paid)
+                                            {
+                                                <span class="badge bg-success">Đã thanh toán (@b.PaymentMethod)</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">Chưa thanh toán (@b.PaymentMethod)</span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Services -->
+                            @if (b.BookingServices != null && b.BookingServices.Any())
+                            {
+                                <div class="mb-3">
+                                    <h6 class="fw-bold small text-muted mb-2">DỊCH VỤ ĐI KÈM</h6>
+                                    <ul class="list-group list-group-flush border rounded-3 small">
+                                        @foreach (var s in b.BookingServices)
+                                        {
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <span><i class="bi bi-stars text-warning me-2"></i>@s.Service?.Name (x @s.Quantity)</span>
+                                                <span class="fw-semibold">@s.TotalPrice.ToString("N0") đ</span>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+
+                            <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                                <div>
+                                    <span class="text-muted small">Tổng thanh toán:</span>
+                                    <span class="fs-4 fw-extrabold text-emerald ms-2">@b.TotalAmount.ToString("N0") đ</span>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    @if (b.PaymentStatus == PaymentStatus.Unpaid && b.Status != BookingStatus.Cancelled)
+                                    {
+                                        <a asp-action="Payment" asp-route-code="@b.BookingCode" class="btn btn-warning btn-sm rounded-pill fw-bold">
+                                            <i class="bi bi-credit-card me-1"></i>Thanh toán ngay
+                                        </a>
+                                    }
+                                    <a asp-action="Confirmation" asp-route-code="@b.BookingCode" class="btn btn-emerald btn-sm rounded-pill fw-bold">
+                                        <i class="bi bi-receipt me-1"></i>Xem &amp; In phiếu
+                                    </a>
+                                </div>
+                            </div>
+
+                            @if (b.Status != BookingStatus.Cancelled && b.Status != BookingStatus.CheckedIn && b.Status != BookingStatus.CheckedOut)
+                            {
+                                <hr class="my-3">
+                                <form asp-action="Cancel" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn hủy đơn đặt phòng này không?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="code" value="@b.BookingCode" />
+                                    <div class="input-group">
+                                        <input type="text" name="reason" class="form-control form-control-sm" placeholder="Nhập lý do hủy (nếu có)..." required />
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                                            <i class="bi bi-x-circle me-1"></i>Hủy đơn đặt phòng này
+                                        </button>
+                                    </div>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger rounded-4 p-4 text-center">
+                        <i class="bi bi-exclamation-circle fs-2 text-danger d-block mb-2"></i>
+                        <h5 class="fw-bold mb-1">Không tìm thấy đơn đặt phòng!</h5>
+                        <p class="text-muted small mb-0">@Model.ErrorMessage</p>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

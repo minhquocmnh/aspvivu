@@ -1,0 +1,281 @@
+@model HotelBookingSystem.Models.ViewModels.RoomDetailsViewModel
+@{
+    ViewData["Title"] = $"{Model.RoomType.Name} - {Model.Hotel.Name}";
+}
+
+<div class="container py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb small">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index" class="text-decoration-none text-muted">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Rooms" asp-action="Index" class="text-decoration-none text-muted">Khách sạn &amp; Homestay</a></li>
+            <li class="breadcrumb-item text-muted">@Model.Hotel.City</li>
+            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">@Model.RoomType.Name</li>
+        </ol>
+    </nav>
+
+    <!-- Main Title & Hotel Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-start mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="badge bg-emerald text-white px-3 py-1 rounded-pill small">
+                    <i class="bi bi-geo-alt-fill me-1"></i>@Model.Hotel.City
+                </span>
+                <span class="text-warning small">
+                    @for (int i = 0; i < Model.Hotel.StarRating; i++)
+                    {
+                        <i class="bi bi-star-fill"></i>
+                    }
+                </span>
+                <span class="text-muted small">| @Model.Hotel.Name</span>
+            </div>
+            <h2 class="fw-extrabold text-dark mb-1">@Model.RoomType.Name</h2>
+            <p class="text-muted mb-0 small">
+                <i class="bi bi-pin-map-fill text-danger me-1"></i>@Model.Hotel.Address
+            </p>
+        </div>
+        <div class="mt-2 mt-md-0">
+            <a href="/Rooms?City=@Model.Hotel.City" class="btn btn-outline-secondary btn-sm rounded-pill">
+                <i class="bi bi-arrow-left me-1"></i>Xem các phòng khác tại @Model.Hotel.City
+            </a>
+        </div>
+    </div>
+
+    <!-- Image Gallery -->
+    <div class="row g-3 mb-5">
+        <div class="col-lg-8">
+            <img src="@Model.RoomType.ImageUrl" class="w-100 rounded-4 shadow-sm object-fit-cover" style="height: 440px;" alt="@Model.RoomType.Name" />
+        </div>
+        <div class="col-lg-4 d-flex flex-column gap-3">
+            <img src="@Model.Hotel.ImageUrl" class="w-100 rounded-4 shadow-sm object-fit-cover" style="height: 212px;" alt="@Model.Hotel.Name" />
+            <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80" class="w-100 rounded-4 shadow-sm object-fit-cover" style="height: 212px;" alt="Không gian phòng" />
+        </div>
+    </div>
+
+    <div class="row g-5">
+        <!-- Room Details & Amenities -->
+        <div class="col-lg-8">
+            <!-- Room Quick Highlights -->
+            <div class="p-4 bg-light rounded-4 mb-4">
+                <div class="row text-center g-3">
+                    <div class="col-3 border-end">
+                        <div class="fs-4 text-emerald"><i class="bi bi-people-fill"></i></div>
+                        <div class="small text-muted">Sức chứa</div>
+                        <div class="fw-bold">@Model.RoomType.Capacity khách</div>
+                    </div>
+                    <div class="col-3 border-end">
+                        <div class="fs-4 text-emerald"><i class="bi bi-aspect-ratio"></i></div>
+                        <div class="small text-muted">Diện tích</div>
+                        <div class="fw-bold">@Model.RoomType.SizeM2 m²</div>
+                    </div>
+                    <div class="col-3 border-end">
+                        <div class="fs-4 text-emerald"><i class="bi bi-moon-stars-fill"></i></div>
+                        <div class="small text-muted">Giường ngủ</div>
+                        <div class="fw-bold small">@Model.RoomType.BedType</div>
+                    </div>
+                    <div class="col-3">
+                        <div class="fs-4 text-emerald"><i class="bi bi-eye-fill"></i></div>
+                        <div class="small text-muted">Cảnh quan</div>
+                        <div class="fw-bold small">View đẹp thoáng</div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-3">Mô Tả Chi Tiết</h4>
+            <p class="text-secondary leading-relaxed mb-4">
+                @Model.RoomType.Description
+            </p>
+            <p class="text-secondary leading-relaxed mb-4">
+                @Model.Hotel.Description
+            </p>
+
+            <h4 class="fw-bold mb-3">Tiện Nghi Phòng &amp; Dịch Vụ Có Sẵn</h4>
+            <div class="row g-3 mb-5">
+                @foreach (var amenity in Model.RoomType.Amenities.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries))
+                {
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center gap-2 text-secondary">
+                            <i class="bi bi-check-circle-fill text-success fs-5"></i>
+                            <span>@amenity</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <h4 class="fw-bold mb-3">Dịch Vụ Đi Kèm Có Thể Chọn Thêm</h4>
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-5">
+                <div class="row g-3">
+                    @foreach (var s in Model.ExtraServices)
+                    {
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-start gap-3 p-3 bg-light rounded-3 h-100">
+                                <div class="fs-3 text-emerald"><i class="bi @s.Icon"></i></div>
+                                <div>
+                                    <div class="fw-bold text-dark">@s.Name</div>
+                                    <div class="small text-muted mb-1">@s.Description</div>
+                                    <div class="text-emerald fw-bold small">+@s.Price.ToString("N0") đ / @s.Unit</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="small text-muted mt-3">
+                    <i class="bi bi-info-circle me-1"></i>Quý khách sẽ được chọn chi tiết số lượng dịch vụ tại bước đặt phòng.
+                </div>
+            </div>
+
+            <h4 class="fw-bold mb-3">Quy Định &amp; Chính Sách</h4>
+            <div class="card border-0 bg-light rounded-4 p-4">
+                <div class="row g-3 small text-secondary">
+                    <div class="col-sm-6">
+                        <strong><i class="bi bi-clock me-1 text-emerald"></i>Nhận phòng:</strong> từ 14:00 chiều
+                    </div>
+                    <div class="col-sm-6">
+                        <strong><i class="bi bi-clock-history me-1 text-emerald"></i>Trả phòng:</strong> trước 12:00 trưa
+                    </div>
+                    <div class="col-sm-6">
+                        <strong><i class="bi bi-x-circle me-1 text-warning"></i>Hủy phòng:</strong> Miễn phí hủy trước 48h
+                    </div>
+                    <div class="col-sm-6">
+                        <strong><i class="bi bi-credit-card me-1 text-primary"></i>Thanh toán:</strong> VietQR, VNPay hoặc tiền mặt
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Booking Box (Interactive Real-time Availability) -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 90px;">
+                <div class="d-flex justify-content-between align-items-baseline mb-3">
+                    <div>
+                        <span class="fs-3 fw-extrabold text-emerald">@Model.RoomType.BasePrice.ToString("N0") đ</span>
+                        <span class="text-muted small">/ đêm</span>
+                    </div>
+                    <span class="badge bg-warning-subtle text-warning border px-2 py-1 small">
+                        Giá niêm yết
+                    </span>
+                </div>
+
+                <div class="border rounded-3 p-3 mb-3 bg-light">
+                    <!-- Real-time Live Badge -->
+                    <div id="availabilityBadge" class="mb-3">
+                        @if (Model.AvailableRoomsCount > 0)
+                        {
+                            <span class="badge bg-success-subtle text-success border border-success-subtle p-2 w-100 text-center d-block">
+                                <i class="bi bi-broadcast me-1"></i>Thời gian thực: Còn @Model.AvailableRoomsCount phòng trống
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle p-2 w-100 text-center d-block">
+                                <i class="bi bi-x-octagon me-1"></i>Hết phòng trống trong thời gian này
+                            </span>
+                        }
+                    </div>
+
+                    <!-- Date picker form -->
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-muted mb-1">Ngày nhận phòng</label>
+                        <input type="date" id="checkInInput" class="form-control" 
+                               value="@Model.CheckInDate.ToString("yyyy-MM-dd")" 
+                               min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small fw-bold text-muted mb-1">Ngày trả phòng</label>
+                        <input type="date" id="checkOutInput" class="form-control" 
+                               value="@Model.CheckOutDate.ToString("yyyy-MM-dd")" 
+                               min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")" />
+                    </div>
+                    <div>
+                        <label class="form-label small fw-bold text-muted mb-1">Số lượng khách</label>
+                        <select id="guestsInput" class="form-select">
+                            @for (int i = 1; i <= Model.RoomType.Capacity; i++)
+                            {
+                                <option value="@i" selected="@(Model.Guests == i ? "selected" : null)">@i khách</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Price breakdown preview -->
+                <div class="mb-3 small">
+                    <div class="d-flex justify-content-between mb-1 text-secondary">
+                        <span id="priceFormula">@Model.RoomType.BasePrice.ToString("N0") đ x @Model.TotalNights đêm</span>
+                        <span id="subtotalPrice" class="fw-semibold">@Model.TotalRoomPrice.ToString("N0") đ</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1 text-secondary">
+                        <span>Phí dịch vụ &amp; VAT:</span>
+                        <span class="text-success fw-semibold">Đã bao gồm</span>
+                    </div>
+                    <hr class="my-2">
+                    <div class="d-flex justify-content-between fs-5 fw-bold text-dark">
+                        <span>Tổng tiền phòng:</span>
+                        <span id="totalPrice" class="text-emerald">@Model.TotalRoomPrice.ToString("N0") đ</span>
+                    </div>
+                </div>
+
+                <!-- Booking Action Button -->
+                <a id="btnBookNow" 
+                   href="/Booking/Create?roomTypeId=@Model.RoomType.Id&checkIn=@Model.CheckInDate.ToString("yyyy-MM-dd")&checkOut=@Model.CheckOutDate.ToString("yyyy-MM-dd")&guests=@Model.Guests"
+                   class="btn btn-emerald btn-lg w-100 fw-bold rounded-pill shadow-sm @(Model.AvailableRoomsCount == 0 ? "disabled" : "")">
+                    <i class="bi bi-calendar2-check me-2"></i>Tiến Hành Đặt Phòng
+                </a>
+                <div class="text-center text-muted small mt-2">
+                    <i class="bi bi-shield-check text-success me-1"></i>Không trừ tiền trước - Miễn phí hủy
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const roomTypeId = @Model.RoomType.Id;
+            const basePrice = @Model.RoomType.BasePrice;
+
+            function updateAvailabilityAndPrice() {
+                const checkIn = $('#checkInInput').val();
+                const checkOut = $('#checkOutInput').val();
+                const guests = $('#guestsInput').val();
+
+                if (!checkIn || !checkOut || checkIn >= checkOut) {
+                    $('#availabilityBadge').html('<span class="badge bg-warning-subtle text-warning border p-2 w-100 text-center d-block">Ngày trả phòng phải sau ngày nhận phòng!</span>');
+                    $('#btnBookNow').addClass('disabled');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/Rooms/CheckAvailability',
+                    method: 'GET',
+                    data: {
+                        roomTypeId: roomTypeId,
+                        checkIn: checkIn,
+                        checkOut: checkOut
+                    },
+                    success: function (data) {
+                        if (data.success) {
+                            if (data.isAvailable) {
+                                $('#availabilityBadge').html('<span class="badge bg-success-subtle text-success border border-success-subtle p-2 w-100 text-center d-block"><i class="bi bi-broadcast me-1"></i>Thời gian thực: Còn ' + data.availableCount + ' phòng trống</span>');
+                                $('#btnBookNow').removeClass('disabled');
+                            } else {
+                                $('#availabilityBadge').html('<span class="badge bg-danger-subtle text-danger border border-danger-subtle p-2 w-100 text-center d-block"><i class="bi bi-x-octagon me-1"></i>Đã hết phòng trong khoảng thời gian này!</span>');
+                                $('#btnBookNow').addClass('disabled');
+                            }
+
+                            $('#priceFormula').text(basePrice.toLocaleString('vi-VN') + ' đ x ' + data.nights + ' đêm');
+                            $('#subtotalPrice').text(data.formattedTotal);
+                            $('#totalPrice').text(data.formattedTotal);
+
+                            // Update booking link
+                            const newHref = '/Booking/Create?roomTypeId=' + roomTypeId + '&checkIn=' + checkIn + '&checkOut=' + checkOut + '&guests=' + guests;
+                            $('#btnBookNow').attr('href', newHref);
+                        }
+                    }
+                });
+            }
+
+            $('#checkInInput, #checkOutInput, #guestsInput').on('change', updateAvailabilityAndPrice);
+        });
+    </script>
+}

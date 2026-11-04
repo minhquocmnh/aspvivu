@@ -1,0 +1,76 @@
+@model HotelBookingSystem.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Đăng Ký Tài Khoản - StayVivu";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5">
+                <div class="text-center mb-4">
+                    <div class="avatar-circle bg-emerald text-white fs-4 mx-auto mb-2" style="width: 52px; height: 52px;">
+                        <i class="bi bi-person-plus-fill"></i>
+                    </div>
+                    <h3 class="fw-bold text-dark">Tạo Tài Khoản Khách Hàng</h3>
+                    <p class="text-muted small">Đăng ký để tích điểm và nhận ưu đãi đặt phòng tốt nhất</p>
+                </div>
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3 small"></div>
+
+                <form asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label asp-for="FullName" class="form-label small fw-bold">Họ và tên của bạn *</label>
+                            <input asp-for="FullName" class="form-control" placeholder="Nguyễn Văn A" required />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Username" class="form-label small fw-bold">Tên đăng nhập *</label>
+                            <input asp-for="Username" class="form-control" placeholder="nguyenvana" required />
+                            <span asp-validation-for="Username" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Phone" class="form-label small fw-bold">Số điện thoại *</label>
+                            <input asp-for="Phone" class="form-control" placeholder="0912345678" required />
+                            <span asp-validation-for="Phone" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label asp-for="Email" class="form-label small fw-bold">Địa chỉ Email *</label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="email@gmail.com" required />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label small fw-bold">Mật khẩu *</label>
+                            <input asp-for="Password" type="password" class="form-control" placeholder="••••••••" required />
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="ConfirmPassword" class="form-label small fw-bold">Xác nhận mật khẩu *</label>
+                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="••••••••" required />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-emerald w-100 py-2 rounded-pill fw-bold shadow-sm mt-4 mb-3">
+                        <i class="bi bi-person-check-fill me-1"></i>Đăng Ký Tài Khoản
+                    </button>
+                </form>
+
+                <div class="text-center small text-muted">
+                    Đã có tài khoản? <a asp-action="Login" class="text-emerald fw-bold text-decoration-none">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

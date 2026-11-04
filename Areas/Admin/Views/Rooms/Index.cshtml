@@ -1,0 +1,117 @@
+@model List<HotelBookingSystem.Models.Room>
+@{
+    ViewData["Title"] = "Quản Lý Danh Sách Phòng";
+    var hotels = ViewBag.Hotels as List<HotelBookingSystem.Models.Hotel> ?? new List<HotelBookingSystem.Models.Hotel>();
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-door-closed text-emerald me-2"></i>Danh Sách Buồng Phòng
+        </h1>
+        <p class="text-muted small mb-0">Quản lý số phòng, tầng và liên kết loại phòng thuộc từng cơ sở</p>
+    </div>
+    <div class="btn-toolbar gap-2">
+        <a asp-action="Rack" class="btn btn-outline-emerald btn-sm rounded-pill px-3">
+            <i class="bi bi-grid-3x3-gap-fill me-1"></i>Sơ đồ phòng trực quan
+        </a>
+        <a asp-action="Create" class="btn btn-emerald btn-sm rounded-pill px-3 shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i>Thêm Phòng Mới
+        </a>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="card border-0 shadow-sm rounded-4 p-3 mb-4 bg-white">
+    <form asp-action="Index" method="get" class="row g-3 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label small fw-bold text-muted">Lọc theo Khách sạn / Homestay</label>
+            <select name="hotelId" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="">Tất cả cơ sở</option>
+                @foreach (var h in hotels)
+                {
+                    <option value="@h.Id" selected="@(ViewBag.CurrentHotelId == h.Id ? "selected" : null)">@h.Name (@h.City)</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small fw-bold text-muted">Trạng thái hệ thống</label>
+            <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                <option value="">Tất cả trạng thái</option>
+                <option value="Available" selected="@(ViewBag.CurrentStatus?.ToString() == "Available" ? "selected" : null)">Sẵn sàng đón khách</option>
+                <option value="Maintenance" selected="@(ViewBag.CurrentStatus?.ToString() == "Maintenance" ? "selected" : null)">Đang bảo trì</option>
+                <option value="Cleaning" selected="@(ViewBag.CurrentStatus?.ToString() == "Cleaning" ? "selected" : null)">Đang dọn dẹp</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm w-100">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Đặt lại bộ lọc
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Table -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small">
+                <tr>
+                    <th style="width: 120px;">Số Phòng</th>
+                    <th>Cơ Sở Khách Sạn</th>
+                    <th>Loại Phòng</th>
+                    <th class="text-center" style="width: 90px;">Tầng</th>
+                    <th class="text-end" style="width: 160px;">Giá Cơ Bản</th>
+                    <th class="text-center" style="width: 160px;">Trạng Thái</th>
+                    <th class="text-center" style="width: 120px;">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>
+                            <strong class="fs-6 text-dark">@r.RoomNumber</strong>
+                        </td>
+                        <td>
+                            <div class="fw-semibold text-dark">@r.Hotel?.Name</div>
+                            <div class="small text-muted"><i class="bi bi-geo-alt me-1"></i>@r.Hotel?.City</div>
+                        </td>
+                        <td>
+                            <div>@r.RoomType?.Name</div>
+                            <div class="small text-muted">Sức chứa: @r.RoomType?.Capacity người</div>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge bg-light text-dark border">Tầng @r.Floor</span>
+                        </td>
+                        <td class="text-end fw-bold text-emerald">
+                            @r.RoomType?.BasePrice.ToString("N0") đ
+                        </td>
+                        <td class="text-center">
+                            @switch (r.Status)
+                            {
+                                case RoomStatus.Available:
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill">Sẵn sàng</span>
+                                    break;
+                                case RoomStatus.Occupied:
+                                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 rounded-pill">Đang có khách</span>
+                                    break;
+                                case RoomStatus.Maintenance:
+                                    <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-2 rounded-pill">Bảo trì</span>
+                                    break;
+                                case RoomStatus.Cleaning:
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2 rounded-pill">Đang dọn dẹp</span>
+                                    break;
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                                <i class="bi bi-pencil-square me-1"></i>Sửa
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

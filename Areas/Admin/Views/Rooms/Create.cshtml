@@ -1,0 +1,62 @@
+@model HotelBookingSystem.Models.Room
+@{
+    ViewData["Title"] = "Thêm Phòng Mới";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h4 class="fw-bold text-dark mb-3">
+                <i class="bi bi-plus-circle text-emerald me-2"></i>Thêm Buồng Phòng Mới
+            </h4>
+
+            <form asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="RoomNumber" class="form-label small fw-bold">Số phòng (Mã phòng) *</label>
+                        <input asp-for="RoomNumber" class="form-control" placeholder="Ví dụ: 101, 202, Villa-01" required />
+                        <span asp-validation-for="RoomNumber" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Floor" class="form-label small fw-bold">Tầng *</label>
+                        <input asp-for="Floor" type="number" class="form-control" min="1" max="100" required />
+                        <span asp-validation-for="Floor" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="RoomTypeId" class="form-label small fw-bold">Thuộc loại phòng *</label>
+                        <select asp-for="RoomTypeId" class="form-select" asp-items="ViewBag.RoomTypes" required></select>
+                        <span asp-validation-for="RoomTypeId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label small fw-bold">Trạng thái khởi tạo</label>
+                        <select asp-for="Status" class="form-select">
+                            <option value="Available">Sẵn sàng đón khách</option>
+                            <option value="Maintenance">Đang bảo trì / Sửa chữa</option>
+                            <option value="Cleaning">Đang dọn dẹp</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 d-flex align-items-center pt-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" asp-for="IsActive" checked>
+                            <label class="form-check-label fw-semibold" asp-for="IsActive">Kích hoạt kinh doanh</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-emerald rounded-pill px-4 fw-bold">
+                        <i class="bi bi-save me-1"></i>Lưu Phòng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+@model HotelBookingSystem.Models.RoomType
+@{
+    ViewData["Title"] = "Chỉnh Sửa Loại Phòng - " + Model.Name;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h4 class="fw-bold text-dark mb-3">
+                <i class="bi bi-pencil-square text-primary me-2"></i>Chỉnh Sửa Loại Phòng
+            </h4>
+
+            <form asp-action="EditRoomType" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label small fw-bold">Tên loại phòng *</label>
+                        <input asp-for="Name" class="form-control" required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="HotelId" class="form-label small fw-bold">Khách sạn / Homestay *</label>
+                        <select asp-for="HotelId" class="form-select" asp-items="ViewBag.Hotels" required></select>
+                        <span asp-validation-for="HotelId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="BasePrice" class="form-label small fw-bold">Giá mỗi đêm (VNĐ) *</label>
+                        <input asp-for="BasePrice" type="number" step="10000" class="form-control" required />
+                        <span asp-validation-for="BasePrice" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Capacity" class="form-label small fw-bold">Sức chứa tối đa *</label>
+                        <input asp-for="Capacity" type="number" min="1" max="20" class="form-control" required />
+                        <span asp-validation-for="Capacity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="SizeM2" class="form-label small fw-bold">Diện tích (m²)</label>
+                        <input asp-for="SizeM2" type="number" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="BedType" class="form-label small fw-bold">Loại giường</label>
+                        <input asp-for="BedType" class="form-control" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ImageUrl" class="form-label small fw-bold">Link ảnh đại diện</label>
+                        <input asp-for="ImageUrl" class="form-control" />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Amenities" class="form-label small fw-bold">Tiện nghi (Phân cách bằng dấu phẩy)</label>
+                        <input asp-for="Amenities" class="form-control" />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label small fw-bold">Mô tả chi tiết</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a asp-action="RoomTypes" class="btn btn-outline-secondary rounded-pill px-4">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold">
+                        <i class="bi bi-check2-circle me-1"></i>Lưu Thay Đổi
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

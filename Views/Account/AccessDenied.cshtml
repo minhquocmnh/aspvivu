@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Không Có Quyền Truy Cập";
+}
+
+<div class="container py-5 text-center">
+    <div class="card border-0 shadow-sm rounded-4 p-5 mx-auto" style="max-width: 550px;">
+        <div class="fs-1 text-danger mb-3"><i class="bi bi-shield-lock-fill"></i></div>
+        <h3 class="fw-bold mb-2">Quyền Truy Cập Bị Giới Hạn</h3>
+        <p class="text-muted mb-4">
+            Khu vực này chỉ dành riêng cho Quản trị viên và Chủ khách sạn. Vui lòng đăng nhập với tài khoản có quyền Admin để tiếp tục.
+        </p>
+        <div class="d-flex justify-content-center gap-2">
+            <a asp-action="Login" class="btn btn-emerald rounded-pill px-4 fw-bold">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Đăng nhập với tài khoản Admin
+            </a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">
+                Về trang chủ
+            </a>
+        </div>
+    </div>
+</div>

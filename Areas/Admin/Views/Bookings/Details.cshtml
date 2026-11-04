@@ -1,0 +1,201 @@
+@model HotelBookingSystem.Models.Booking
+@{
+    ViewData["Title"] = "Chi Tiết Đơn Đặt Phòng - " + Model.BookingCode;
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <a asp-action="Index" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left me-1"></i>Danh sách đơn</a>
+            <span class="text-muted">/</span>
+            <span class="badge bg-secondary">@Model.BookingCode</span>
+        </div>
+        <h1 class="h3 fw-bold text-dark mb-0">Đơn Đặt Phòng @Model.BookingCode</h1>
+    </div>
+
+    <div class="btn-toolbar gap-2">
+        <button onclick="window.print()" class="btn btn-outline-dark btn-sm rounded-pill px-3">
+            <i class="bi bi-printer me-1"></i>In Phiếu Thu
+        </button>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xóa đơn này khỏi hệ thống không?');" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                <i class="bi bi-trash me-1"></i>Xóa Đơn
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Details -->
+    <div class="col-lg-8">
+        <!-- Guest & Room Information -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <div class="row g-4">
+                <div class="col-md-6 border-end">
+                    <h6 class="text-uppercase fw-bold text-muted small mb-3">Thông Tin Khách Hàng</h6>
+                    <div class="fw-bold fs-5 text-dark mb-1">@Model.CustomerName</div>
+                    <div class="text-secondary small mb-1"><i class="bi bi-telephone-fill text-emerald me-2"></i>@Model.CustomerPhone</div>
+                    <div class="text-secondary small mb-2"><i class="bi bi-envelope-fill text-primary me-2"></i>@Model.CustomerEmail</div>
+                    @if (!string.IsNullOrEmpty(Model.SpecialRequests))
+                    {
+                        <div class="p-2 bg-light rounded-3 small text-muted">
+                            <strong>Ghi chú / Yêu cầu:</strong> @Model.SpecialRequests
+                        </div>
+                    }
+                </div>
+
+                <div class="col-md-6">
+                    <h6 class="text-uppercase fw-bold text-muted small mb-3">Thông Tin Phòng Đã Đặt</h6>
+                    <div class="fw-bold text-dark fs-5 mb-1">
+                        Phòng @Model.Room?.RoomNumber 
+                        <span class="badge bg-emerald text-white fs-6">Tầng @Model.Room?.Floor</span>
+                    </div>
+                    <div class="text-secondary small mb-1">@Model.Room?.RoomType?.Name</div>
+                    <div class="text-secondary small mb-2"><i class="bi bi-building text-warning me-2"></i>@Model.Room?.Hotel?.Name (@Model.Room?.Hotel?.City)</div>
+                    <div class="p-2 bg-light rounded-3 small text-muted">
+                        <div><strong>Nhận phòng:</strong> @Model.CheckInDate.ToString("dd/MM/yyyy") (14:00)</div>
+                        <div><strong>Trả phòng:</strong> @Model.CheckOutDate.ToString("dd/MM/yyyy") (12:00)</div>
+                        <div><strong>Tổng thời gian:</strong> @Model.TotalNights đêm | <strong>Số khách:</strong> @Model.GuestsCount người</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Extra Services Table -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <h5 class="fw-bold text-dark mb-3">
+                <i class="bi bi-stars text-warning me-2"></i>Dịch Vụ Đi Kèm Đã Đặt
+            </h5>
+
+            @if (Model.BookingServices != null && Model.BookingServices.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm align-middle mb-0">
+                        <thead class="table-light small">
+                            <tr>
+                                <th>Tên dịch vụ</th>
+                                <th class="text-center" style="width: 100px;">Số lượng</th>
+                                <th class="text-end" style="width: 150px;">Đơn giá</th>
+                                <th class="text-end" style="width: 160px;">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var bs in Model.BookingServices)
+                            {
+                                <tr>
+                                    <td>
+                                        <i class="bi @bs.Service?.Icon text-emerald me-2"></i>
+                                        <strong>@bs.Service?.Name</strong>
+                                    </td>
+                                    <td class="text-center">@bs.Quantity</td>
+                                    <td class="text-end">@bs.UnitPrice.ToString("N0") đ</td>
+                                    <td class="text-end fw-semibold">@bs.TotalPrice.ToString("N0") đ</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted small mb-0">Đơn đặt phòng này không kèm dịch vụ bổ sung nào.</p>
+            }
+        </div>
+
+        <!-- Financial Summary -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h5 class="fw-bold text-dark mb-3">Tóm Tắt Doanh Thu Đơn Đặt</h5>
+            <div class="row g-2 small">
+                <div class="col-6 text-muted">Tiền phòng (@Model.TotalNights đêm):</div>
+                <div class="col-6 text-end fw-semibold">@Model.RoomPrice.ToString("N0") đ</div>
+                <div class="col-6 text-muted">Dịch vụ đi kèm:</div>
+                <div class="col-6 text-end fw-semibold">@Model.ServicesPrice.ToString("N0") đ</div>
+                <hr class="my-2">
+                <div class="col-6 fs-5 fw-bold text-dark">Tổng tiền thanh toán:</div>
+                <div class="col-6 text-end fs-5 fw-extrabold text-emerald">@Model.TotalAmount.ToString("N0") đ</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Status & Control Actions -->
+    <div class="col-lg-4">
+        <!-- Update Status Card -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <h5 class="fw-bold text-dark mb-3">
+                <i class="bi bi-toggles text-primary me-2"></i>Cập Nhật Trạng Thái
+            </h5>
+
+            <form asp-action="UpdateStatus" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Trạng thái đặt phòng</label>
+                    <select name="status" class="form-select">
+                        <option value="Pending" selected="@(Model.Status == BookingStatus.Pending ? "selected" : null)">Chờ xác nhận</option>
+                        <option value="Confirmed" selected="@(Model.Status == BookingStatus.Confirmed ? "selected" : null)">Đã xác nhận</option>
+                        <option value="CheckedIn" selected="@(Model.Status == BookingStatus.CheckedIn ? "selected" : null)">Đã nhận phòng (Checked In)</option>
+                        <option value="CheckedOut" selected="@(Model.Status == BookingStatus.CheckedOut ? "selected" : null)">Đã trả phòng (Checked Out)</option>
+                        <option value="Cancelled" selected="@(Model.Status == BookingStatus.Cancelled ? "selected" : null)">Đã hủy đơn</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted">Trạng thái thanh toán</label>
+                    <select name="paymentStatus" class="form-select">
+                        <option value="Unpaid" selected="@(Model.PaymentStatus == PaymentStatus.Unpaid ? "selected" : null)">Chưa thanh toán</option>
+                        <option value="Paid" selected="@(Model.PaymentStatus == PaymentStatus.Paid ? "selected" : null)">Đã thanh toán đủ</option>
+                        <option value="Refunded" selected="@(Model.PaymentStatus == PaymentStatus.Refunded ? "selected" : null)">Đã hoàn tiền</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-emerald w-100 rounded-pill fw-bold">
+                    <i class="bi bi-save me-1"></i>Lưu Cập Nhật
+                </button>
+            </form>
+        </div>
+
+        <!-- Fast Action Buttons -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h6 class="fw-bold text-dark mb-3">Thao Tác Nhanh</h6>
+            <div class="d-grid gap-2">
+                @if (Model.Status == BookingStatus.Pending)
+                {
+                    <form asp-action="QuickStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="status" value="@BookingStatus.Confirmed" />
+                        <button type="submit" class="btn btn-success w-100 rounded-pill btn-sm fw-bold">
+                            <i class="bi bi-check-lg me-1"></i>Xác Nhận Đơn Này
+                        </button>
+                    </form>
+                }
+
+                @if (Model.Status == BookingStatus.Confirmed)
+                {
+                    <form asp-action="QuickStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="status" value="@BookingStatus.CheckedIn" />
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill btn-sm fw-bold">
+                            <i class="bi bi-door-open me-1"></i>Làm Thủ Tục Check-in
+                        </button>
+                    </form>
+                }
+
+                @if (Model.Status == BookingStatus.CheckedIn)
+                {
+                    <form asp-action="QuickStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <input type="hidden" name="status" value="@BookingStatus.CheckedOut" />
+                        <button type="submit" class="btn btn-secondary w-100 rounded-pill btn-sm fw-bold">
+                            <i class="bi bi-check-all me-1"></i>Làm Thủ Tục Check-out
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</div>

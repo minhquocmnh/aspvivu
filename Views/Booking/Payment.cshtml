@@ -1,0 +1,147 @@
+@model HotelBookingSystem.Models.ViewModels.BookingConfirmationViewModel
+@{
+    ViewData["Title"] = "Thanh Toán Đơn Đặt Phòng - " + Model.Booking.BookingCode;
+}
+
+<div class="bg-emerald text-white py-4 mb-4">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-1"><i class="bi bi-wallet2 me-2"></i>Cổng Thanh Toán An Toàn</h2>
+        <p class="text-light opacity-90 mb-0 small">
+            Đơn đặt phòng: <strong class="badge bg-warning text-dark fs-6">@Model.Booking.BookingCode</strong> | 
+            Số tiền: <strong class="text-white fs-5">@Model.Booking.TotalAmount.ToString("N0") VNĐ</strong>
+        </p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow rounded-4 overflow-hidden">
+                <!-- Nav tabs for payment modes -->
+                <div class="card-header bg-white border-bottom p-0">
+                    <ul class="nav nav-tabs nav-fill border-0" id="paymentTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active py-3 fw-bold text-success border-0 border-bottom border-success border-3" 
+                                    id="vietqr-tab" data-bs-toggle="tab" data-bs-target="#vietqr-pane" type="button" role="tab">
+                                <i class="bi bi-qr-code-scan me-2"></i>Quét Mã VietQR (Khuyên dùng)
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link py-3 fw-bold text-primary border-0" 
+                                    id="vnpay-tab" data-bs-toggle="tab" data-bs-target="#vnpay-pane" type="button" role="tab">
+                                <i class="bi bi-credit-card-2-front me-2"></i>Cổng Giả Lập VNPay / Thẻ ATM
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="tab-content" id="paymentTabContent">
+                        <!-- TAB 1: VIETQR -->
+                        <div class="tab-pane fade show active text-center" id="vietqr-pane" role="tabpanel">
+                            <p class="text-muted small mb-3">
+                                Mở ứng dụng ngân hàng bất kỳ (Vietcombank, MB, Techcombank, BIDV, Momo...) và quét mã QR bên dưới để thanh toán tức thì:
+                            </p>
+
+                            <div class="d-inline-block p-3 bg-light rounded-4 border shadow-sm mb-3">
+                                <img src="@Model.VietQrUrl" alt="Mã VietQR" class="img-fluid rounded-3" style="max-width: 280px;" />
+                            </div>
+
+                            <div class="alert alert-secondary text-start mx-auto rounded-3 small p-3 mb-4" style="max-width: 460px;">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Ngân hàng thụ hưởng:</span>
+                                    <strong>@Model.BankName</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Số tài khoản:</span>
+                                    <strong class="text-dark fs-6">@Model.AccountNumber</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Tên chủ tài khoản:</span>
+                                    <strong>@Model.AccountName</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Số tiền cần chuyển:</span>
+                                    <strong class="text-emerald fs-6">@Model.Booking.TotalAmount.ToString("N0") VNĐ</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-muted">Nội dung chuyển khoản:</span>
+                                    <strong class="text-danger">@Model.TransferContent</strong>
+                                </div>
+                            </div>
+
+                            <form asp-action="SimulatePaymentSuccess" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="code" value="@Model.Booking.BookingCode" />
+                                <input type="hidden" name="method" value="VietQR" />
+                                <button type="submit" class="btn btn-emerald btn-lg px-5 rounded-pill fw-bold shadow-sm">
+                                    <i class="bi bi-check2-circle me-2"></i>Tôi Đã Chuyển Khoản Xong
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- TAB 2: VNPAY GATEWAY SANDBOX -->
+                        <div class="tab-pane fade" id="vnpay-pane" role="tabpanel">
+                            <div class="text-center mb-4">
+                                <span class="badge bg-primary-subtle text-primary border px-3 py-2 rounded-pill small mb-2">
+                                    Môi trường thử nghiệm VNPay Sandbox
+                                </span>
+                                <h4 class="fw-bold">Thanh Toán Trực Tuyến Qua VNPay</h4>
+                                <p class="text-muted small">Mô phỏng quy trình xác thực OTP thực tế của cổng thanh toán quốc gia</p>
+                            </div>
+
+                            <div class="border rounded-4 p-4 bg-light mb-4">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold">Chọn ngân hàng nội địa</label>
+                                        <select class="form-select" id="bankSelect">
+                                            <option value="NCB">Ngân hàng Quốc Dân (NCB - Thẻ Test mặc định)</option>
+                                            <option value="VCB">Vietcombank</option>
+                                            <option value="MB">MB Bank</option>
+                                            <option value="TCB">Techcombank</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold">Số thẻ ATM (Test Sandbox)</label>
+                                        <input type="text" class="form-control" value="9704198526191432198" readonly />
+                                        <div class="form-text small text-muted">Số thẻ test mẫu của cổng VNPay Sandbox</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Tên chủ thẻ (Không dấu)</label>
+                                        <input type="text" class="form-control" value="NGUYEN VAN A" readonly />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label small fw-bold">Ngày phát hành</label>
+                                        <input type="text" class="form-control" value="07/15" readonly />
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label small fw-bold">Mã xác thực OTP</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" value="123456" id="otpInput" />
+                                            <button class="btn btn-outline-secondary" type="button" onclick="$('#otpInput').val('123456')">Gợi ý OTP: 123456</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form asp-action="SimulatePaymentSuccess" method="post" class="text-center">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="code" value="@Model.Booking.BookingCode" />
+                                <input type="hidden" name="method" value="VNPay" />
+                                <button type="submit" class="btn btn-primary btn-lg px-5 rounded-pill fw-bold shadow-sm">
+                                    <i class="bi bi-shield-check me-2"></i>Xác Nhận Thanh Toán VNPay
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light p-3 text-center border-top">
+                    <a asp-action="Confirmation" asp-route-code="@Model.Booking.BookingCode" class="text-muted small text-decoration-none">
+                        Bỏ qua bước này và xem phiếu đặt phòng (Thanh toán tại quầy lễ tân) <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

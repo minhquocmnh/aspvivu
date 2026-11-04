@@ -1,0 +1,275 @@
+@model HotelBookingSystem.Models.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Bảng Điều Khiển Quản Trị - Thống Kê & Doanh Thu";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-speedometer2 text-emerald me-2"></i>Bảng Điều Khiển Chủ Khách Sạn
+        </h1>
+        <p class="text-muted small mb-0">Thống kê hoạt động kinh doanh, tỷ lệ phòng và đơn đặt phòng thời gian thực</p>
+    </div>
+    <div class="btn-toolbar mb-2 mb-md-0 gap-2">
+        <a asp-area="Admin" asp-controller="Rooms" asp-action="Rack" class="btn btn-emerald btn-sm rounded-pill px-3 shadow-sm">
+            <i class="bi bi-grid-3x3-gap-fill me-1"></i>Xem Sơ Đồ Phòng Trực Quan
+        </a>
+    </div>
+</div>
+
+<!-- 4 Key Stat Cards -->
+<div class="row g-3 mb-4">
+    <!-- Revenue -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted small fw-bold text-uppercase">Doanh thu tháng này</span>
+                <span class="avatar-circle bg-success-subtle text-success"><i class="bi bi-cash-stack"></i></span>
+            </div>
+            <h3 class="fw-extrabold text-success mb-1">@Model.MonthRevenue.ToString("N0") <span class="fs-6 fw-normal text-muted">đ</span></h3>
+            <div class="small text-muted">
+                Tổng tích lũy: <strong class="text-dark">@Model.TotalRevenue.ToString("N0") đ</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Bookings -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted small fw-bold text-uppercase">Tổng số đơn đặt</span>
+                <span class="avatar-circle bg-primary-subtle text-primary"><i class="bi bi-calendar2-check"></i></span>
+            </div>
+            <h3 class="fw-extrabold text-dark mb-1">@Model.TotalBookingsCount</h3>
+            <div class="small text-muted">
+                Chờ duyệt: <span class="badge bg-warning text-dark">@Model.PendingBookingsCount đơn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Occupancy Rate -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted small fw-bold text-uppercase">Tỷ lệ lấp đầy</span>
+                <span class="avatar-circle bg-warning-subtle text-warning"><i class="bi bi-pie-chart-fill"></i></span>
+            </div>
+            <h3 class="fw-extrabold text-dark mb-1">@Model.OccupancyRate%</h3>
+            <div class="small text-muted">
+                Đang ở: <strong class="text-danger">@Model.OccupiedRoomsNow</strong> / @Model.TotalRoomsCount phòng
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Rooms -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <span class="text-muted small fw-bold text-uppercase">Phòng trống sẵn sàng</span>
+                <span class="avatar-circle bg-info-subtle text-info"><i class="bi bi-door-open-fill"></i></span>
+            </div>
+            <h3 class="fw-extrabold text-info mb-1">@Model.AvailableRoomsNow</h3>
+            <div class="small text-muted">
+                Hôm nay đón: <strong class="text-success">@Model.TodayCheckInsCount</strong> khách
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart & Quick Status Row -->
+<div class="row g-4 mb-4">
+    <!-- Revenue Chart -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0 text-dark">
+                    <i class="bi bi-graph-up-arrow text-emerald me-2"></i>Biểu Đồ Doanh Thu 6 Tháng Gần Nhất
+                </h5>
+                <span class="badge bg-light text-dark border">Cập nhật tự động</span>
+            </div>
+            <div style="height: 290px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Operation Status -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+            <h5 class="fw-bold mb-3 text-dark">
+                <i class="bi bi-clipboard2-pulse-fill text-warning me-2"></i>Tình Hình Vận Hành Hôm Nay
+            </h5>
+
+            <ul class="list-group list-group-flush small">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                    <div>
+                        <i class="bi bi-box-arrow-in-right text-success fs-5 me-2"></i>
+                        <span>Khách nhận phòng (Check-in)</span>
+                    </div>
+                    <span class="badge bg-success rounded-pill fs-6">@Model.TodayCheckInsCount</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                    <div>
+                        <i class="bi bi-box-arrow-right text-danger fs-5 me-2"></i>
+                        <span>Khách trả phòng (Check-out)</span>
+                    </div>
+                    <span class="badge bg-danger rounded-pill fs-6">@Model.TodayCheckOutsCount</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                    <div>
+                        <i class="bi bi-hourglass-split text-warning fs-5 me-2"></i>
+                        <span>Đơn chờ xử lý thanh toán</span>
+                    </div>
+                    <span class="badge bg-warning text-dark rounded-pill fs-6">@Model.PendingBookingsCount</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                    <div>
+                        <i class="bi bi-door-closed text-primary fs-5 me-2"></i>
+                        <span>Phòng sẵn sàng đón khách mới</span>
+                    </div>
+                    <span class="badge bg-primary rounded-pill fs-6">@Model.AvailableRoomsNow</span>
+                </li>
+            </ul>
+
+            <div class="mt-auto pt-3">
+                <a asp-area="Admin" asp-controller="Bookings" asp-action="Index" class="btn btn-outline-dark btn-sm w-100 rounded-pill">
+                    Xem toàn bộ đơn đặt phòng <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Bookings Table -->
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white mb-4">
+    <div class="card-header bg-white p-4 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="fw-bold mb-0 text-dark">
+            <i class="bi bi-clock-history text-primary me-2"></i>Đơn Đặt Phòng Mới Nhất
+        </h5>
+        <a asp-area="Admin" asp-controller="Bookings" asp-action="Index" class="btn btn-sm btn-outline-emerald rounded-pill">
+            Xem tất cả
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light small">
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Khách Hàng</th>
+                    <th>Khách Sạn &amp; Phòng</th>
+                    <th>Lưu Trú</th>
+                    <th class="text-end">Tổng Tiền</th>
+                    <th class="text-center">Thanh Toán</th>
+                    <th class="text-center">Trạng Thái</th>
+                    <th class="text-center">Thao Tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model.RecentBookings)
+                {
+                    <tr>
+                        <td>
+                            <strong class="text-emerald">@b.BookingCode</strong>
+                            <div class="small text-muted" style="font-size: 11px;">@b.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                        </td>
+                        <td>
+                            <div class="fw-bold text-dark">@b.CustomerName</div>
+                            <div class="small text-muted">@b.CustomerPhone</div>
+                        </td>
+                        <td>
+                            <div class="small fw-semibold text-dark">@b.Room?.Hotel?.Name</div>
+                            <div class="small text-muted">Phòng @b.Room?.RoomNumber (@b.Room?.RoomType?.Name)</div>
+                        </td>
+                        <td>
+                            <div class="small">
+                                <strong>@b.CheckInDate.ToString("dd/MM")</strong> &rarr; <strong>@b.CheckOutDate.ToString("dd/MM")</strong>
+                                <span class="badge bg-light text-dark border">@b.TotalNights đêm</span>
+                            </div>
+                        </td>
+                        <td class="text-end fw-bold text-dark">
+                            @b.TotalAmount.ToString("N0") đ
+                        </td>
+                        <td class="text-center">
+                            @if (b.PaymentStatus == PaymentStatus.Paid)
+                            {
+                                <span class="badge bg-success small"><i class="bi bi-check-circle me-1"></i>Đã thanh toán (@b.PaymentMethod)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark small"><i class="bi bi-clock me-1"></i>Chưa thanh toán</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @switch (b.Status)
+                            {
+                                case BookingStatus.Pending:
+                                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                                    break;
+                                case BookingStatus.Confirmed:
+                                    <span class="badge bg-success">Đã xác nhận</span>
+                                    break;
+                                case BookingStatus.CheckedIn:
+                                    <span class="badge bg-primary">Đang ở</span>
+                                    break;
+                                case BookingStatus.CheckedOut:
+                                    <span class="badge bg-secondary">Đã trả phòng</span>
+                                    break;
+                                case BookingStatus.Cancelled:
+                                    <span class="badge bg-danger">Đã hủy</span>
+                                    break;
+                            }
+                        </td>
+                        <td class="text-center">
+                            <a asp-area="Admin" asp-controller="Bookings" asp-action="Details" asp-route-id="@b.Id" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                                <i class="bi bi-eye me-1"></i>Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const labels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenues.Select(x => x.MonthLabel)));
+        const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyRevenues.Select(x => x.Revenue)));
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: data,
+                    backgroundColor: 'rgba(15, 118, 110, 0.75)',
+                    borderColor: 'rgb(15, 118, 110)',
+                    borderWidth: 1.5,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    </script>
+}

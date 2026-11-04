@@ -1,0 +1,182 @@
+@model HotelBookingSystem.Models.ViewModels.BookingConfirmationViewModel
+@{
+    ViewData["Title"] = "Xác Nhận Đặt Phòng - " + Model.Booking.BookingCode;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <!-- Header Notification -->
+            <div class="card border-0 shadow rounded-4 overflow-hidden mb-4">
+                <div class="p-4 text-center @(Model.Booking.PaymentStatus == PaymentStatus.Paid ? "bg-emerald text-white" : "bg-warning-subtle text-dark border-bottom")">
+                    @if (Model.Booking.PaymentStatus == PaymentStatus.Paid)
+                    {
+                        <div class="fs-1 mb-2"><i class="bi bi-patch-check-fill text-warning"></i></div>
+                        <h3 class="fw-bold mb-1">Đặt Phòng &amp; Thanh Toán Thành Công!</h3>
+                        <p class="mb-0 opacity-90 small">Phiếu xác nhận điện tử đã được lưu vào hệ thống của khách sạn</p>
+                    }
+                    else
+                    {
+                        <div class="fs-1 mb-2 text-warning"><i class="bi bi-clock-history"></i></div>
+                        <h3 class="fw-bold mb-1">Đã Tiếp Nhận Đơn Đặt Phòng!</h3>
+                        <p class="mb-0 text-muted small">Quý khách vui lòng thanh toán trực tiếp khi làm thủ tục nhận phòng tại khách sạn</p>
+                    }
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <!-- Top Info Strip -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 border-bottom mb-4">
+                        <div>
+                            <div class="small text-muted">Mã Đặt Phòng (Booking Code):</div>
+                            <span class="fs-4 fw-extrabold text-emerald letter-spacing-1">@Model.Booking.BookingCode</span>
+                        </div>
+                        <div class="text-md-end mt-2 mt-md-0">
+                            <div class="small text-muted">Thời gian đặt:</div>
+                            <span class="fw-semibold text-dark">@Model.Booking.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                        </div>
+                    </div>
+
+                    <!-- Stay Information -->
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <h6 class="text-uppercase fw-bold text-muted small mb-2">Thông Tin Khách Sạn</h6>
+                            <div class="p-3 bg-light rounded-3">
+                                <h5 class="fw-bold text-dark mb-1">@Model.Booking.Room?.Hotel?.Name</h5>
+                                <div class="small text-muted mb-2">
+                                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>@Model.Booking.Room?.Hotel?.Address, @Model.Booking.Room?.Hotel?.City
+                                </div>
+                                <div class="small text-muted">
+                                    <i class="bi bi-telephone-fill me-1 text-emerald"></i>Hotline: @Model.Booking.Room?.Hotel?.Phone
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <h6 class="text-uppercase fw-bold text-muted small mb-2">Thông Tin Người Đặt</h6>
+                            <div class="p-3 bg-light rounded-3">
+                                <div class="fw-bold text-dark mb-1">@Model.Booking.CustomerName</div>
+                                <div class="small text-muted mb-1"><i class="bi bi-telephone me-1"></i>@Model.Booking.CustomerPhone</div>
+                                <div class="small text-muted"><i class="bi bi-envelope me-1"></i>@Model.Booking.CustomerEmail</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room & Stay Schedule -->
+                    <div class="card border bg-light rounded-3 p-3 mb-4">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-5">
+                                <span class="badge bg-emerald text-white mb-1">Phòng số @Model.Booking.Room?.RoomNumber</span>
+                                <h5 class="fw-bold text-dark mb-1">@Model.Booking.Room?.RoomType?.Name</h5>
+                                <div class="small text-muted">@Model.Booking.GuestsCount khách lưu trú | @Model.Booking.TotalNights đêm</div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="d-flex justify-content-between text-center bg-white p-3 rounded-3 border">
+                                    <div>
+                                        <div class="small text-muted">Nhận phòng (14:00)</div>
+                                        <div class="fw-bold text-dark fs-6">@Model.Booking.CheckInDate.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                    <div class="d-flex align-items-center text-muted px-2">
+                                        <i class="bi bi-arrow-right fs-4 text-emerald"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">Trả phòng (12:00)</div>
+                                        <div class="fw-bold text-dark fs-6">@Model.Booking.CheckOutDate.ToString("dd/MM/yyyy")</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Extra Services Detail Table -->
+                    @if (Model.Booking.BookingServices != null && Model.Booking.BookingServices.Any())
+                    {
+                        <h6 class="text-uppercase fw-bold text-muted small mb-2">Dịch Vụ Đi Kèm Đã Đặt</h6>
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-sm align-middle">
+                                <thead class="table-light small">
+                                    <tr>
+                                        <th>Tên dịch vụ</th>
+                                        <th class="text-center" style="width: 100px;">Số lượng</th>
+                                        <th class="text-end" style="width: 140px;">Đơn giá</th>
+                                        <th class="text-end" style="width: 160px;">Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var bs in Model.Booking.BookingServices)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                                <strong>@bs.Service?.Name</strong>
+                                            </td>
+                                            <td class="text-center">@bs.Quantity</td>
+                                            <td class="text-end">@bs.UnitPrice.ToString("N0") đ</td>
+                                            <td class="text-end fw-semibold">@bs.TotalPrice.ToString("N0") đ</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    <!-- Financial Summary -->
+                    <div class="row justify-content-end mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded-3 small">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Tiền phòng (@Model.Booking.TotalNights đêm):</span>
+                                    <span>@Model.Booking.RoomPrice.ToString("N0") đ</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Dịch vụ đi kèm:</span>
+                                    <span>@Model.Booking.ServicesPrice.ToString("N0") đ</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Phương thức thanh toán:</span>
+                                    <strong class="text-dark">@Model.Booking.PaymentMethod</strong>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="text-muted">Trạng thái thanh toán:</span>
+                                    @if (Model.Booking.PaymentStatus == PaymentStatus.Paid)
+                                    {
+                                        <span class="badge bg-success">Đã thanh toán đủ</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Chưa thanh toán (Trả tại KS)</span>
+                                    }
+                                </div>
+                                <hr class="my-2">
+                                <div class="d-flex justify-content-between fs-5 fw-bold">
+                                    <span>Tổng cộng:</span>
+                                    <span class="text-emerald">@Model.Booking.TotalAmount.ToString("N0") đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fast check-in note -->
+                    <div class="alert alert-info border-0 rounded-3 small mb-4 d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle-fill fs-5"></i>
+                        <div>
+                            Quý khách vui lòng lưu lại <strong>Mã Đặt Phòng: @Model.Booking.BookingCode</strong> hoặc chụp lại màn hình này để xuất trình tại quầy lễ tân khi làm thủ tục Check-in.
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex flex-wrap gap-2 justify-content-center no-print">
+                        <button onclick="window.print()" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+                            <i class="bi bi-printer me-1"></i>In Phiếu Xác Nhận
+                        </button>
+                        <a asp-action="Lookup" asp-route-bookingCode="@Model.Booking.BookingCode" class="btn btn-outline-emerald rounded-pill px-4 fw-bold">
+                            <i class="bi bi-search me-1"></i>Tra Cứu Lại Đơn Này
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-emerald rounded-pill px-4 fw-bold">
+                            <i class="bi bi-house me-1"></i>Về Trang Chủ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

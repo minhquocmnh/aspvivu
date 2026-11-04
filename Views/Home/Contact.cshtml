@@ -1,0 +1,69 @@
+@{
+    ViewData["Title"] = "Liên Hệ Hỗ Trợ - StayVivu";
+}
+
+<div class="container py-5">
+    <div class="row g-5">
+        <div class="col-lg-5">
+            <h2 class="fw-bold mb-3">Liên Hệ Trợ Giúp</h2>
+            <p class="text-muted mb-4">
+                Đội ngũ chăm sóc khách hàng luôn túc trực 24/7 để hỗ trợ bạn tra cứu đơn đặt phòng, thay đổi lịch trình hoặc đặt dịch vụ theo yêu cầu.
+            </p>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="avatar-circle bg-emerald text-white"><i class="bi bi-telephone-fill"></i></div>
+                <div>
+                    <div class="fw-bold">Hotline 24/7</div>
+                    <div class="text-muted">1900 6868 (Miễn phí cước gọi)</div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="avatar-circle bg-warning text-dark"><i class="bi bi-envelope-fill"></i></div>
+                <div>
+                    <div class="fw-bold">Email hỗ trợ</div>
+                    <div class="text-muted">hotro@stayvivu.vn</div>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <div class="avatar-circle bg-primary text-white"><i class="bi bi-geo-alt-fill"></i></div>
+                <div>
+                    <div class="fw-bold">Trụ sở chính</div>
+                    <div class="text-muted">Tòa nhà Diamond Plaza, 34 Lê Duẩn, Bến Nghé, Quận 1, TP. Hồ Chí Minh</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5">
+                <h4 class="fw-bold mb-3">Gửi Thắc Mắc &amp; Yêu Cầu</h4>
+                <form onsubmit="event.preventDefault(); alert('Cảm ơn bạn! Yêu cầu của bạn đã được gửi thành công. Chúng tôi sẽ phản hồi trong 15 phút.');">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Họ và tên</label>
+                            <input type="text" class="form-control" placeholder="Nguyễn Văn A" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold small">Số điện thoại</label>
+                            <input type="tel" class="form-control" placeholder="0901234567" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small">Địa chỉ Email</label>
+                            <input type="email" class="form-control" placeholder="example@gmail.com" required />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold small">Nội dung tin nhắn</label>
+                            <textarea class="form-control" rows="4" placeholder="Nhập yêu cầu cần trợ giúp..." required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-emerald fw-bold rounded-pill px-4 py-2">
+                                <i class="bi bi-send me-1"></i>Gửi Thông Điệp
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

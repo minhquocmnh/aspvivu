@@ -1,0 +1,77 @@
+@model HotelBookingSystem.Models.RoomType
+@{
+    ViewData["Title"] = "Thêm Loại Phòng Mới";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+            <h4 class="fw-bold text-dark mb-3">
+                <i class="bi bi-plus-circle text-emerald me-2"></i>Thêm Loại Phòng Mới
+            </h4>
+
+            <form asp-action="CreateRoomType" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger small"></div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label small fw-bold">Tên loại phòng *</label>
+                        <input asp-for="Name" class="form-control" placeholder="Ví dụ: Phòng Deluxe Ban Công Hướng Biển" required />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="HotelId" class="form-label small fw-bold">Khách sạn / Homestay trực thuộc *</label>
+                        <select asp-for="HotelId" class="form-select" asp-items="ViewBag.Hotels" required></select>
+                        <span asp-validation-for="HotelId" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="BasePrice" class="form-label small fw-bold">Giá mỗi đêm (VNĐ) *</label>
+                        <input asp-for="BasePrice" type="number" step="10000" class="form-control" placeholder="850000" required />
+                        <span asp-validation-for="BasePrice" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Capacity" class="form-label small fw-bold">Sức chứa tối đa (khách) *</label>
+                        <input asp-for="Capacity" type="number" min="1" max="20" class="form-control" value="2" required />
+                        <span asp-validation-for="Capacity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="SizeM2" class="form-label small fw-bold">Diện tích (m²)</label>
+                        <input asp-for="SizeM2" type="number" min="10" class="form-control" value="30" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="BedType" class="form-label small fw-bold">Loại giường</label>
+                        <input asp-for="BedType" class="form-control" value="1 giường King size" />
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="ImageUrl" class="form-label small fw-bold">Link ảnh đại diện (URL)</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Amenities" class="form-label small fw-bold">Tiện nghi (Phân cách bằng dấu phẩy)</label>
+                        <input asp-for="Amenities" class="form-control" value="Wifi miễn phí, Máy lạnh, Smart TV, Ban công, Bồn tắm nằm" />
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Description" class="form-label small fw-bold">Mô tả chi tiết phòng</label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Nhập mô tả về không gian, tầm nhìn, phong cách thiết kế..."></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end mt-4">
+                    <a asp-action="RoomTypes" class="btn btn-outline-secondary rounded-pill px-4">Hủy bỏ</a>
+                    <button type="submit" class="btn btn-emerald rounded-pill px-4 fw-bold">
+                        <i class="bi bi-save me-1"></i>Lưu Loại Phòng
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

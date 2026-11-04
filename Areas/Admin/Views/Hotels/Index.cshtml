@@ -1,0 +1,62 @@
+@model List<HotelBookingSystem.Models.Hotel>
+@{
+    ViewData["Title"] = "Quản Lý Cơ Sở Khách Sạn & Homestay";
+}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+    <div>
+        <h1 class="h3 fw-bold text-dark mb-1">
+            <i class="bi bi-building text-info me-2"></i>Cơ Sở Khách Sạn &amp; Homestay
+        </h1>
+        <p class="text-muted small mb-0">Quản lý chi nhánh, địa chỉ, hotline và xếp hạng sao các cơ sở lưu trú</p>
+    </div>
+    <div class="btn-toolbar gap-2">
+        <a asp-action="Create" class="btn btn-emerald btn-sm rounded-pill px-3 shadow-sm">
+            <i class="bi bi-plus-circle me-1"></i>Thêm Cơ Sở Mới
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    @foreach (var h in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+                <div class="position-relative" style="height: 180px;">
+                    <img src="@h.ImageUrl" class="w-100 h-100 object-fit-cover" alt="@h.Name" />
+                    <span class="position-absolute top-0 start-0 m-3 badge bg-emerald text-white rounded-pill px-3 py-1">
+                        <i class="bi bi-geo-alt-fill me-1"></i>@h.City
+                    </span>
+                    <span class="position-absolute top-0 end-0 m-3 badge bg-dark bg-opacity-75 rounded-pill px-3 py-1 text-warning">
+                        @for (int i = 0; i < h.StarRating; i++)
+                        {
+                            <i class="bi bi-star-fill"></i>
+                        }
+                    </span>
+                </div>
+
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-1">@h.Name</h5>
+                        <p class="small text-muted mb-2">
+                            <i class="bi bi-pin-map text-danger me-1"></i>@h.Address
+                        </p>
+                        <p class="small text-secondary mb-3 line-clamp-2">@h.Description</p>
+
+                        <div class="d-flex justify-content-between small text-muted border-top pt-2">
+                            <span><i class="bi bi-door-closed me-1"></i>@h.Rooms.Count phòng</span>
+                            <span><i class="bi bi-card-heading me-1"></i>@h.RoomTypes.Count loại phòng</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 pt-2 border-top d-flex justify-content-between align-items-center">
+                        <div class="small text-muted"><i class="bi bi-telephone me-1"></i>@h.Phone</div>
+                        <a asp-action="Edit" asp-route-id="@h.Id" class="btn btn-outline-primary btn-sm rounded-pill px-3">
+                            <i class="bi bi-pencil me-1"></i>Chỉnh sửa
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
